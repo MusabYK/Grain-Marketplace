@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1027440108252",
+    "project_id": "grainmarketplace-87f45",
+    "storage_bucket": "grainmarketplace-87f45.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1027440108252:android:6e7bf18f286d96b929ca19",
+        "android_client_info": {
+          "package_name": "com.example.grain_market_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2toRB330F1TUcEaOr2_5y3q6huE4YCiU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
