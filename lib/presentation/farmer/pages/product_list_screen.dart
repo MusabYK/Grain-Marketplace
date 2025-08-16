@@ -146,7 +146,7 @@ class ProductCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      '\$${product.pricePerUnit.toStringAsFixed(2)} / ${product.unit}',
+                      '₦${product.pricePerUnit.toStringAsFixed(2)} / ${product.unit}',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         color: Colors.green[700],
                         fontWeight: FontWeight.bold,

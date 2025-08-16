@@ -64,14 +64,9 @@ class ProductDetailsScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   Row(
                     children: [
-                      Icon(
-                        Icons.attach_money,
-                        color: Colors.green[700],
-                        size: 28,
-                      ),
                       const SizedBox(width: 5),
                       Text(
-                        '\$${product.pricePerUnit.toStringAsFixed(2)} / ${product.unit}',
+                        '₦${product.pricePerUnit.toStringAsFixed(2)} / ${product.unit}',
                         style: Theme.of(context).textTheme.headlineSmall
                             ?.copyWith(
                               color: Colors.green[700],
@@ -79,7 +74,7 @@ class ProductDetailsScreen extends StatelessWidget {
                             ),
                       ),
                       const SizedBox(width: 20),
-                      Icon(Icons.scale, color: Colors.grey[700], size: 28),
+                      Icon(Icons.scale, color: Colors.grey[700], size: 24),
                       const SizedBox(width: 5),
                       Text(
                         '${product.quantityAvailable} ${product.unit} available',

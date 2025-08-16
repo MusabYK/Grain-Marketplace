@@ -188,7 +188,7 @@ class _BuyerHomeTab extends StatelessWidget {
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         subtitle: Text(
-                          '${product.quantityAvailable} ${product.unit} @ \$${product.pricePerUnit}/${product.unit}',
+                          '${product.quantityAvailable} ${product.unit} @ N${product.pricePerUnit}/${product.unit}',
                         ),
                         trailing: const Icon(
                           Icons.arrow_forward_ios,

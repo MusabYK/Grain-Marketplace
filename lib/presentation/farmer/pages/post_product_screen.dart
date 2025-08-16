@@ -36,15 +36,60 @@ class _PostProductScreenState extends State<PostProductScreen> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+  // --- MODIFIED _pickImage method to use the camera ---
+  Future<void> _takePicture() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
     setState(() {
       if (pickedFile != null) {
         _imageFile = File(pickedFile.path);
       } else {
-        print('No image selected.');
+        print('No image taken.');
       }
     });
+  }
+
+  // You can also offer both options by using a modal bottom sheet
+  Future<void> _showImageSourceOptions() async {
+    await showModalBottomSheet(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text('Take a picture'),
+              onTap: () async {
+                Navigator.of(context).pop();
+                final pickedFile = await _picker.pickImage(
+                  source: ImageSource.camera,
+                );
+                setState(() {
+                  if (pickedFile != null) {
+                    _imageFile = File(pickedFile.path);
+                  }
+                });
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Choose from gallery'),
+              onTap: () async {
+                Navigator.of(context).pop();
+                final pickedFile = await _picker.pickImage(
+                  source: ImageSource.gallery,
+                );
+                setState(() {
+                  if (pickedFile != null) {
+                    _imageFile = File(pickedFile.path);
+                  }
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _postProduct() async {
@@ -52,6 +97,12 @@ class _PostProductScreenState extends State<PostProductScreen> {
       if (_selectedUnit == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please select a unit of measurement.')),
+        );
+        return;
+      }
+      if (_imageFile == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please add an image of the product.')),
         );
         return;
       }
@@ -70,7 +121,8 @@ class _PostProductScreenState extends State<PostProductScreen> {
         unit: _selectedUnit!,
         quantityAvailable: double.parse(_quantityController.text),
         farmerId: farmerId,
-        imageFile: _imageFile,
+        // imageFile: _imageFile,
+        imageFile: null,
         location: _locationController.text.isEmpty
             ? null
             : _locationController.text,
@@ -123,7 +175,6 @@ class _PostProductScreenState extends State<PostProductScreen> {
                   CustomTextField(
                     controller: _descriptionController,
                     labelText: 'Description',
-                    // maxLines: 3,
                     validator: (value) =>
                         value!.isEmpty ? 'Description cannot be empty' : null,
                   ),
@@ -208,7 +259,7 @@ class _PostProductScreenState extends State<PostProductScreen> {
                   ),
                   const SizedBox(height: 10),
                   GestureDetector(
-                    onTap: _pickImage,
+                    onTap: _showImageSourceOptions, // Call the new method
                     child: Container(
                       height: 150,
                       width: double.infinity,
@@ -231,7 +282,7 @@ class _PostProductScreenState extends State<PostProductScreen> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Tap to select image',
+                                  'Tap to add an image', // Updated text
                                   style: TextStyle(color: Colors.grey[600]),
                                 ),
                               ],

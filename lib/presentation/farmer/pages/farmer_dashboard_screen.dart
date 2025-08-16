@@ -220,7 +220,7 @@ class _FarmerHomeTab extends StatelessWidget {
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         subtitle: Text(
-                          '${product.quantityAvailable} ${product.unit} @ \$${product.pricePerUnit}/${product.unit}',
+                          '${product.quantityAvailable} ${product.unit} @ ₦${product.pricePerUnit}/${product.unit}',
                         ),
                         trailing: Icon(
                           Icons.arrow_forward_ios,
@@ -372,7 +372,7 @@ class _MarketInfoTab extends StatelessWidget {
                                     ).textTheme.bodyMedium,
                                   ),
                                   Text(
-                                    '\$${product.pricePerUnit.toStringAsFixed(2)} / ${product.unit}',
+                                    '₦${product.pricePerUnit.toStringAsFixed(2)} / ${product.unit}',
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleMedium
