@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../../auth/providers/auth_provider.dart';
 
-class BuyerProfileTab extends StatelessWidget {
-  const BuyerProfileTab({super.key});
+class FarmerProfileTab extends StatelessWidget {
+  const FarmerProfileTab({super.key});
 
   @override
   Widget build(BuildContext context) {

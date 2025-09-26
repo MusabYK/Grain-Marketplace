@@ -104,6 +104,34 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // Placeholder for the updated method in your AuthProvider
+  Future<bool> updateUser({
+    required String uid,
+    required String name,
+    required String email,
+    String? location,
+  }) async {
+    // 1. Set isLoading=true and notify listeners
+    // 2. Call your backend repository method (e.g., userRepository.updateUser())
+    // 3. If successful, update the local _currentUser object
+    //    _currentUser = _currentUser.copyWith(name: name, email: email, location: location);
+    // 4. Set isLoading=false and notify listeners
+    // 5. Return success status
+    // ... actual implementation details will vary based on your backend logic
+    await Future.delayed(
+      const Duration(milliseconds: 500),
+    ); // Simulate network call
+
+    // Placeholder update logic:
+    _currentUser = _currentUser?.copyWith(
+      name: name,
+      email: email,
+      location: location, // Assuming 'location' is a field on your user model
+    );
+    notifyListeners();
+    return true;
+  }
+
   Future<void> signOut() async {
     await _authRepository.signOut();
     _status = AuthStatus.unauthenticated;

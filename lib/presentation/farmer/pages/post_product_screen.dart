@@ -120,7 +120,7 @@ class _PostProductScreenState extends State<PostProductScreen> {
         unit: _selectedUnit!,
         quantityAvailable: double.parse(_quantityController.text),
         farmerId: farmerId,
-        farmerPhone: "farmerPhone",
+        phone: farmerPhone,
         // imageFile: _imageFile,
         imageFile: null,
         location: _locationController.text.isEmpty
