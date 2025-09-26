@@ -8,6 +8,7 @@ class Product extends Equatable {
   final String unit; // e.g., 'kg', 'ton'
   final double quantityAvailable;
   final String farmerId;
+  // final String farmerPhone;
   final String? imageUrl;
   final DateTime postedDate;
   final String? location;
@@ -21,6 +22,7 @@ class Product extends Equatable {
     required this.unit,
     required this.quantityAvailable,
     required this.farmerId,
+    // required this.farmerPhone,
     this.imageUrl,
     required this.postedDate,
     this.location,
@@ -36,6 +38,7 @@ class Product extends Equatable {
     unit,
     quantityAvailable,
     farmerId,
+    // farmerPhone,
     imageUrl,
     postedDate,
     location,
@@ -50,6 +53,7 @@ class Product extends Equatable {
     String? unit,
     double? quantityAvailable,
     String? farmerId,
+    // String? farmerPhone,
     String? imageUrl,
     DateTime? postedDate,
     String? location,
@@ -63,6 +67,7 @@ class Product extends Equatable {
       unit: unit ?? this.unit,
       quantityAvailable: quantityAvailable ?? this.quantityAvailable,
       farmerId: farmerId ?? this.farmerId,
+      // farmerPhone: farmerPhone ?? this.farmerPhone,
       imageUrl: imageUrl ?? this.imageUrl,
       postedDate: postedDate ?? this.postedDate,
       location: location ?? this.location,

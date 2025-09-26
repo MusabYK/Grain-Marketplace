@@ -77,14 +77,20 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> register(String email, String password, String userType) async {
+  Future<void> register(
+    String email,
+    String password,
+    String userType,
+    String name,
+    String phone,
+  ) async {
     _status = AuthStatus.registering;
     _errorMessage = null;
     notifyListeners();
 
     final result = await RegisterUser(
       _authRepository,
-    ).call(email, password, userType);
+    ).call(email, password, userType, name, phone);
     result.fold(
       (failure) {
         _errorMessage = failure.message;

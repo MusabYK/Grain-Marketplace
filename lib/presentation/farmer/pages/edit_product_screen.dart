@@ -3,26 +3,46 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import '../../../core/widgets/custom_text_field.dart';
+import '../../../core/utils/app_validators.dart';
+import '../../../domain/entities/product.dart';
 import '../providers/farmer_dashboard_provider.dart';
-import '../../auth/providers/auth_provider.dart';
 
-class PostProductScreen extends StatefulWidget {
-  const PostProductScreen({super.key});
+class EditProductScreen extends StatefulWidget {
+  final Product product;
+  const EditProductScreen({super.key, required this.product});
 
   @override
-  State<PostProductScreen> createState() => _PostProductScreenState();
+  State<EditProductScreen> createState() => _EditProductScreenState();
 }
 
-class _PostProductScreenState extends State<PostProductScreen> {
+class _EditProductScreenState extends State<EditProductScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController();
-  final TextEditingController _quantityController = TextEditingController();
-  final TextEditingController _locationController = TextEditingController();
+  late final TextEditingController _nameController;
+  late final TextEditingController _descriptionController;
+  late final TextEditingController _priceController;
+  late final TextEditingController _quantityController;
+  late final TextEditingController _locationController;
   String? _selectedUnit;
-  File? _imageFile;
+  File? _newImageFile;
   final ImagePicker _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize controllers with existing product data
+    _nameController = TextEditingController(text: widget.product.name);
+    _descriptionController = TextEditingController(
+      text: widget.product.description,
+    );
+    _priceController = TextEditingController(
+      text: widget.product.pricePerUnit.toString(),
+    );
+    _quantityController = TextEditingController(
+      text: widget.product.quantityAvailable.toString(),
+    );
+    _locationController = TextEditingController(text: widget.product.location);
+    _selectedUnit = widget.product.unit;
+  }
 
   @override
   void dispose() {
@@ -34,19 +54,6 @@ class _PostProductScreenState extends State<PostProductScreen> {
     super.dispose();
   }
 
-  // --- MODIFIED _pickImage method to use the camera ---
-  Future<void> _takePicture() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-    setState(() {
-      if (pickedFile != null) {
-        _imageFile = File(pickedFile.path);
-      } else {
-        print('No image taken.');
-      }
-    });
-  }
-
-  // You can also offer both options by using a modal bottom sheet
   Future<void> _showImageSourceOptions() async {
     await showModalBottomSheet(
       context: context,
@@ -56,7 +63,7 @@ class _PostProductScreenState extends State<PostProductScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.camera_alt),
-              title: const Text('Take a picture'),
+              title: const Text('Take a new picture'),
               onTap: () async {
                 Navigator.of(context).pop();
                 final pickedFile = await _picker.pickImage(
@@ -64,7 +71,7 @@ class _PostProductScreenState extends State<PostProductScreen> {
                 );
                 setState(() {
                   if (pickedFile != null) {
-                    _imageFile = File(pickedFile.path);
+                    _newImageFile = File(pickedFile.path);
                   }
                 });
               },
@@ -79,7 +86,7 @@ class _PostProductScreenState extends State<PostProductScreen> {
                 );
                 setState(() {
                   if (pickedFile != null) {
-                    _imageFile = File(pickedFile.path);
+                    _newImageFile = File(pickedFile.path);
                   }
                 });
               },
@@ -90,7 +97,7 @@ class _PostProductScreenState extends State<PostProductScreen> {
     );
   }
 
-  void _postProduct() async {
+  void _updateProduct() async {
     if (_formKey.currentState!.validate()) {
       if (_selectedUnit == null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -98,41 +105,35 @@ class _PostProductScreenState extends State<PostProductScreen> {
         );
         return;
       }
-      if (_imageFile == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please add an image of the product.')),
-        );
-        return;
-      }
 
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final farmerProvider = Provider.of<FarmerDashboardProvider>(
         context,
         listen: false,
       );
-      final farmerId = authProvider.currentUser!.uid;
-      final farmerPhone = authProvider.currentUser!.phone;
 
-      bool success = await farmerProvider.createProduct(
+      // Create an updated Product object
+      final updatedProduct = widget.product.copyWith(
         name: _nameController.text,
         description: _descriptionController.text,
         pricePerUnit: double.parse(_priceController.text),
         unit: _selectedUnit!,
         quantityAvailable: double.parse(_quantityController.text),
-        farmerId: farmerId,
-        farmerPhone: "farmerPhone",
-        // imageFile: _imageFile,
-        imageFile: null,
         location: _locationController.text.isEmpty
             ? null
             : _locationController.text,
       );
 
+      // Call the provider method to update the product
+      bool success = await farmerProvider.updateProduct(
+        updatedProduct,
+        _newImageFile,
+      );
+
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Product posted successfully!')),
+          const SnackBar(content: Text('Product updated successfully!')),
         );
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(); // Go back to the details screen
       } else if (farmerProvider.errorMessage != null) {
         ScaffoldMessenger.of(
           context,
@@ -145,7 +146,7 @@ class _PostProductScreenState extends State<PostProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Post New Grain'),
+        title: const Text('Edit Product'),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
       ),
@@ -159,7 +160,7 @@ class _PostProductScreenState extends State<PostProductScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Grain Details',
+                    'Update Grain Details',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -167,7 +168,7 @@ class _PostProductScreenState extends State<PostProductScreen> {
                   const SizedBox(height: 20),
                   CustomTextField(
                     controller: _nameController,
-                    labelText: 'Grain Name (e.g., Maize, Wheat)',
+                    labelText: 'Grain Name',
                     validator: (value) =>
                         value!.isEmpty ? 'Name cannot be empty' : null,
                   ),
@@ -252,14 +253,14 @@ class _PostProductScreenState extends State<PostProductScreen> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Upload Image',
+                    'Update Image',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 10),
                   GestureDetector(
-                    onTap: _showImageSourceOptions, // Call the new method
+                    onTap: _showImageSourceOptions,
                     child: Container(
                       height: 150,
                       width: double.infinity,
@@ -271,35 +272,62 @@ class _PostProductScreenState extends State<PostProductScreen> {
                           width: 1.5,
                         ),
                       ),
-                      child: _imageFile == null
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.camera_alt,
-                                  size: 50,
-                                  color: Colors.grey[600],
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Tap to add an image', // Updated text
-                                  style: TextStyle(color: Colors.grey[600]),
-                                ),
-                              ],
-                            )
-                          : ClipRRect(
+                      child: _newImageFile != null
+                          ? ClipRRect(
                               borderRadius: BorderRadius.circular(9),
                               child: Image.file(
-                                _imageFile!,
+                                _newImageFile!,
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                               ),
-                            ),
+                            )
+                          : (widget.product.imageUrl != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(9),
+                                    child: Image.network(
+                                      widget.product.imageUrl!,
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                            if (loadingProgress == null)
+                                              return child;
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          },
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              const Icon(
+                                                Icons.broken_image,
+                                                size: 80,
+                                                color: Colors.grey,
+                                              ),
+                                    ),
+                                  )
+                                : Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.camera_alt,
+                                        size: 50,
+                                        color: Colors.grey[600],
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        'Tap to add an image',
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ],
+                                  )),
                     ),
                   ),
                   const SizedBox(height: 30),
                   ElevatedButton(
-                    onPressed: farmerProvider.isLoading ? null : _postProduct,
+                    onPressed: farmerProvider.isLoading ? null : _updateProduct,
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 55),
                       shape: RoundedRectangleBorder(
@@ -312,7 +340,7 @@ class _PostProductScreenState extends State<PostProductScreen> {
                     child: farmerProvider.isLoading
                         ? const CircularProgressIndicator(color: Colors.white)
                         : const Text(
-                            'Post Grain',
+                            'Update Product',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,

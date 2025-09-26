@@ -12,7 +12,15 @@ class RegisterUser {
     String email,
     String password,
     String userType,
+    String name,
+    String phone,
   ) {
-    return repository.registerWithEmailAndPassword(email, password, userType);
+    return repository.registerWithEmailAndPassword(
+      email,
+      password,
+      userType,
+      name,
+      phone,
+    );
   }
 }

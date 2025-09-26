@@ -19,12 +19,16 @@ class AuthRepositoryImpl implements AuthRepository {
     String email,
     String password,
     String userType,
+    String name,
+    String phone,
   ) async {
     try {
       final userModel = await authDataSource.registerWithEmailAndPassword(
         email,
         password,
         userType,
+        name,
+        phone,
       );
       return Right(userModel);
     } on AuthFailure catch (e) {

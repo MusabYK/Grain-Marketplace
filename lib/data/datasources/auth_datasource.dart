@@ -9,6 +9,8 @@ abstract class AuthDataSource {
     String email,
     String password,
     String userType,
+    String name,
+    String phone,
   );
   Future<UserModel> signInWithEmailAndPassword(String email, String password);
   Future<void> signOut();
@@ -48,6 +50,8 @@ class AuthDataSourceImpl implements AuthDataSource {
     String email,
     String password,
     String userType,
+    String name,
+    String phone,
   ) async {
     try {
       final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
@@ -55,7 +59,13 @@ class AuthDataSourceImpl implements AuthDataSource {
         password: password,
       );
       final uid = userCredential.user!.uid;
-      final userModel = UserModel(uid: uid, email: email, userType: userType);
+      final userModel = UserModel(
+        uid: uid,
+        email: email,
+        userType: userType,
+        name: name,
+        phone: phone,
+      );
       await _firestore
           .collection(AppConstants.usersCollection)
           .doc(uid)

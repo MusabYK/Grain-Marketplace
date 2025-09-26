@@ -8,6 +8,8 @@ abstract class AuthRepository {
     String email,
     String password,
     String userType,
+    String name,
+    String phone,
   );
   Future<Either<Failure, User>> signInWithEmailAndPassword(
     String email,

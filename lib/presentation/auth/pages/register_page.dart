@@ -19,6 +19,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   String? _selectedUserType; // 'farmer' or 'buyer'
 
   // Add a listener to navigate after successful registration
@@ -88,6 +90,8 @@ class _RegisterPageState extends State<RegisterPage> {
         _emailController.text,
         _passwordController.text,
         _selectedUserType!,
+        _nameController.text,
+        _phoneController.text,
       );
       // The listener takes care of navigation and error display
     }
@@ -125,6 +129,20 @@ class _RegisterPageState extends State<RegisterPage> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 40),
+                CustomTextField(
+                  controller: _nameController,
+                  labelText: 'Name',
+                  keyboardType: TextInputType.text,
+                  // validator: AppValidators.validateEmail,
+                ),
+                const SizedBox(height: 20),
+                CustomTextField(
+                  controller: _phoneController,
+                  labelText: 'Phone No.',
+                  keyboardType: TextInputType.phone,
+                  // validator: AppValidators.validateEmail,
+                ),
+                const SizedBox(height: 20),
                 CustomTextField(
                   controller: _emailController,
                   labelText: 'Email',

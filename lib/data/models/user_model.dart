@@ -6,7 +6,7 @@ class UserModel extends User {
     required super.email,
     required super.userType, // 'farmer', 'buyer'
     super.name,
-    super.phone,
+    required super.phone,
     super.location,
   });
 

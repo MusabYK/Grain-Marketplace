@@ -10,6 +10,8 @@ import '../../farmer/pages/product_details_screen.dart'; // Re-use product detai
 import '../../shared/custom_app_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import 'browse_product_tab.dart';
+
 class BuyerDashboardScreen extends StatefulWidget {
   const BuyerDashboardScreen({super.key});
 
@@ -253,46 +255,6 @@ class _BuyerHomeTab extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class BrowseProductTab extends StatelessWidget {
-  const BrowseProductTab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final buyerProvider = Provider.of<BuyerDashboardProvider>(context);
-
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            'Browse Available Grains',
-            style: Theme.of(
-              context,
-            ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Expanded(
-          child: buyerProvider.isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : buyerProvider.availableProducts.isEmpty
-              ? const Center(
-                  child: Text('No grains currently available for purchase.'),
-                )
-              : ListView.builder(
-                  itemCount: buyerProvider.availableProducts.length,
-                  itemBuilder: (context, index) {
-                    final product = buyerProvider.availableProducts[index];
-                    return ProductCard(
-                      product: product,
-                    ); // Re-use the ProductCard
-                  },
-                ),
-        ),
-      ],
     );
   }
 }
